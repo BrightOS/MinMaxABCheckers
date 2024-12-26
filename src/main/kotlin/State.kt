@@ -56,6 +56,7 @@ class State(var Board: Array<Array<String>>, var p: Player) {
                 }
             }
         }
+        if (moves.isNotEmpty()) return moves
 
         for (i in 0..5) {
             for (j in 0..5) {

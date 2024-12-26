@@ -8,51 +8,30 @@ class MinMax_AB {
 
     fun heuristic(state: State): Int {
         val board = state.Board
-        val playerName = state.p.name
+        val playerName = state.p
+        val isBlack = if (playerName.name == "b") -1 else 1
 
-        var enemyCheckersAtMy = 0 // Количество вражеских шашек на моей половине поля
-        var eatenEnemyCheckers = 0 // Количество съеденных шашек соперника
-        var myLadies = 0 // Количество моих дамок
-        var lockedCheckers = 0 // Количество запертых белых/чёрных шашек
-
-        eatenEnemyCheckers = 8 - when {
-            playerName == "w" -> {
-                board.sumOf { it.count { it == "b" || it == "B" } }
-            }
-            else -> {
-                board.sumOf { it.count { it == "w" || it == "W" } }
-            }
-        }
-
-        for (i in board.indices) {
-            for (j in board.indices) {
-                if (board[i][j] == "b" && i > 2 && playerName == "w") {
-                    enemyCheckersAtMy++
+        var cb = 0
+        var cw = 0
+        var cbk = 0
+        var cwk = 0
+        for (i in 0 until board.size) {
+            for (j in 0 until board.size) {
+                if (board[i][j].equals("b")) {
+                    cb++
                 }
-                if (board[i][j] == "w" && i < 3 && playerName == "b") {
-                    enemyCheckersAtMy++
+                if (board[i][j].equals("B")) {
+                    cbk++
                 }
-                if (board[i][j] == "B" && playerName == "b") {
-                    myLadies++
+                if (board[i][j].equals("w")) {
+                    cw++
                 }
-                if (board[i][j] == "W" && playerName == "w") {
-                    myLadies++
-                }
-                if (board[i][j] == "w" && playerName == "w") {
-                    if (!state.AnyMovePossible(state.p, state)) lockedCheckers++
-                }
-                if (board[i][j] == "b" && playerName == "b") {
-                    if (!state.AnyMovePossible(state.p, state)) lockedCheckers++
-                }
-                if (board[i][j] == "W") {
-                    lockedCheckers++
+                if (board[i][j].equals("W")) {
+                    cwk++
                 }
             }
         }
-        val h = when {
-            playerName == "w" -> ((enemyCheckersAtMy * 2) + (eatenEnemyCheckers) + (myLadies * 3) + (lockedCheckers * 3))
-            else -> ((enemyCheckersAtMy * 3) + (eatenEnemyCheckers * 3) + (myLadies * 2) + (lockedCheckers * 3))
-        }
+        val h = ((cb) * (10 * isBlack) + ((cw) * (-10 * isBlack)) + (cbk * 20 * isBlack) + (cwk * (-20 * isBlack)))
 
         return h
     }
